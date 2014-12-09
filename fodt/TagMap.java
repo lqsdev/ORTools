@@ -3,25 +3,28 @@ package fodt;
 
 import java.util.List;
 import java.util.Map;
-import java.io.File;
-import java.io.FileOutputStream;
+//import java.io.File;
+//import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
+//import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+//import java.util.Iterator;
+//import java.util.List;
+//import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.dom4j.Document;
+//import org.apache.log4j.Logger;
+
+
+//import org.dom4j.Document;
 import org.dom4j.DocumentException;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
+//import org.dom4j.Element;
+//import org.dom4j.io.SAXReader;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -45,7 +48,9 @@ public class TagMap extends DefaultHandler{
 
 	private String preTag = null;
 	private tag tagNew = null;
-	private List<tag> lstTag = null;
+//	private List<tag> lstTag = null;
+	
+//	private static Logger logger = Logger.getLogger(TagMap.class);
 	
 	public Map<String, List<tag>> getMapTag() {
 		return mapTag;
@@ -89,11 +94,12 @@ public class TagMap extends DefaultHandler{
 		
 	public Map<String, List<tag>> readConfig() throws DocumentException, ParserConfigurationException, SAXException, IOException{
 	
-		String strFilePath = "config/configFile01.xml";
+	String strFilePath = "config.xml";
 		InputStream input = this.getClass().getClassLoader().getResourceAsStream(strFilePath);
 			
 		if (input == null){
-			System.out.println("Input file is null");
+//			logger.error("Input file is null");
+			System.out.println("Err: Input file is null");
 			return null;
 		}
 			
@@ -113,42 +119,74 @@ public class TagMap extends DefaultHandler{
 
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-		if(qName.contains("text")){
-
+		if (qName.equals("FodtFile")){
 			tagNew = new tag();
 			int nAttTotal = attributes.getLength();
-			System.out.println("Elturi: " + uri + ", localName: " + localName + ", qName: " + qName);
+//			logger.debug("Elturi: " + uri + ", localName: " + localName + ", qName: " + qName);
+			System.out.println("Debug: Elturi: " + uri + ", localName: " + localName + ", qName: " + qName);
 			attribute attb = new attribute();
 			
 			for (int i = 0; i< nAttTotal; i++){
-				System.out.println("Abt localName: " + attributes.getLocalName(i) + ", value: " + attributes.getValue(i));
+//				logger.debug("Abt localName: " + attributes.getLocalName(i) + ", value: " + attributes.getValue(i));
+				System.out.println("Debug: Abt localName: " + attributes.getLocalName(i) + ", value: " + attributes.getValue(i));
 				attb.setName(attributes.getLocalName(i));
 				attb.setValue(attributes.getValue(i));
 			}
 			
 			tagNew.setTagName(qName);	
 			if (!tagNew.putAttribute(attb)){
+//				logger.error("attribute can't put into list. tagName: " + qName);
 				System.out.println("attribute can't put into list. tagName: " + qName);
 			}
-		
-		}else if (qName.equals("FodtPath")){
+		}else if (qName.equals("DocBookPath")){
 			tagNew = new tag();
 			int nAttTotal = attributes.getLength();
-			System.out.println("Elturi: " + uri + ", localName: " + localName + ", qName: " + qName);
+			
+//			logger.debug("Elturi: " + uri + ", localName: " + localName + ", qName: " + qName);
 			attribute attb = new attribute();
 			
 			for (int i = 0; i< nAttTotal; i++){
-				System.out.println("Abt localName: " + attributes.getLocalName(i) + ", value: " + attributes.getValue(i));
+//				logger.debug("Abt localName: " + attributes.getLocalName(i) + ", value: " + attributes.getValue(i));
 				attb.setName(attributes.getLocalName(i));
 				attb.setValue(attributes.getValue(i));
 			}
 			
 			tagNew.setTagName(qName);	
 			if (!tagNew.putAttribute(attb)){
-				System.out.println("attribute can't put into list. tagName: " + qName);
+//				logger.error("attribute can't put into list. tagName: " + qName);
 			}
-		}else if (qName.equals("DocBook")){
+		}else if (qName.equals("DocType")){
+			tagNew = new tag();
+			int nAttTotal = attributes.getLength();
+//			logger.debug("Elturi: " + uri + ", localName: " + localName + ", qName: " + qName);
+			attribute attb = new attribute();
 			
+			for (int i = 0; i< nAttTotal; i++){
+//				logger.debug("Abt localName: " + attributes.getLocalName(i) + ", value: " + attributes.getValue(i));
+				attb.setName(attributes.getLocalName(i));
+				attb.setValue(attributes.getValue(i));
+			}
+			
+			tagNew.setTagName(qName);	
+			if (!tagNew.putAttribute(attb)){
+//				logger.error("attribute can't put into list. tagName: " + qName);
+			}
+		}else if (qName.equals("Image")){
+			tagNew = new tag();
+			int nAttTotal = attributes.getLength();
+//			logger.debug("Elturi: " + uri + ", localName: " + localName + ", qName: " + qName);
+			attribute attb = new attribute();
+			
+			for (int i = 0; i< nAttTotal; i++){
+//				logger.debug("Abt localName: " + attributes.getLocalName(i) + ", value: " + attributes.getValue(i));
+				attb.setName(attributes.getLocalName(i));
+				attb.setValue(attributes.getValue(i));
+			}
+			
+			tagNew.setTagName(qName);	
+			if (!tagNew.putAttribute(attb)){
+//				logger.error("attribute can't put into list. tagName: " + qName);
+			}
 		}
 		preTag = qName;
 	}
@@ -156,10 +194,7 @@ public class TagMap extends DefaultHandler{
 	@Override
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException {
-		if (qName.contains("text") || qName.equals("FodtPath")){
-			putTag(tagNew);
-			tagNew = null;
-		}else if (qName.equals("FodtPath")){
+		if (qName.contains("text") || qName.equals("FodtFile") || qName.equals("DocBookPath") || qName.equals("DocType")){
 			putTag(tagNew);
 			tagNew = null;
 		}
@@ -173,10 +208,10 @@ public class TagMap extends DefaultHandler{
 	
 	@Override
 	public void characters(char[] ch, int start, int length) throws SAXException {
-		if (preTag != null && preTag.contains("text")){
+		if (preTag != null && (preTag.contains("text") || preTag.equals("DocType"))){
 			String strDocBookTag = new String(ch,start,length); 
 			if (isDocBookTag(strDocBookTag)){
-				System.out.println("Content: " + strDocBookTag);
+//				logger.debug("Content: " + strDocBookTag);
 				tagNew.setObjTag(strDocBookTag);
 			}
 
